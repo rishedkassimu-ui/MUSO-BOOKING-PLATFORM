@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUSO | Official University Booking System</title>
+    <style>
+        :root {
+            --muso-navy: #1a237e;
+            --muso-accent: #303f9f;
+            --gold: #ffd700;
+            --glass: rgba(255, 255, 255, 0.95);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(rgba(26, 35, 126, 0.85), rgba(26, 35, 126, 0.85)), 
+                        url('https://rishedkassimu-ui.github.io/KESALE-CUP/Screenshot_20260322-105404_1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .main-card {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--glass);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+        .header-section {
+            position: relative;
+            background: var(--muso-navy);
+            text-align: center;
+            overflow: hidden;
+            border-bottom: 6px solid var(--gold);
+        }
+
+        .header-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://rishedkassimu-ui.github.io/KESALE-CUP/Screenshot_20260322-105404_1.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.4; 
+            z-index: 1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            padding: 60px 40px;
+            color: white;
+        }
+
+        h1 { margin: 0; font-size: 3.2rem; text-transform: uppercase; letter-spacing: 5px; text-shadow: 2px 2px 10px rgba(0,0,0,0.6); }
+
+        .description-box { padding: 20px 40px 0; line-height: 1.7; font-size: 1.1rem; max-width: 900px; margin: 0 auto; text-shadow: 1px 1px 5px rgba(0,0,0,0.6); }
+
+        .nav-tabs { display: flex; background: #e8eaf6; padding: 12px; gap: 10px; }
+        .nav-tabs button { flex: 1; padding: 20px 5px; border: none; cursor: pointer; font-weight: bold; font-size: 0.95rem; background: #c5cae9; color: var(--muso-navy); border-radius: 12px; transition: 0.3s; text-transform: uppercase; }
+        .nav-tabs button.active { background: var(--muso-navy); color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        
+        .content-area { padding: 40px; min-height: 400px; }
+        #resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; list-style: none; padding: 0; }
+        
+        .resource-card { 
+            background: #f8f9fa; padding: 40px 20px; border-radius: 18px; 
+            border: 2px solid #dee2e6; text-align: center; font-style: italic; 
+            font-weight: bold; font-size: 1.3rem; color: var(--muso-navy); 
+            cursor: pointer; transition: 0.3s; 
+        }
+        .resource-card:hover { border-color: var(--muso-navy); background: var(--muso-navy); color: white; transform: translateY(-5px); }
+
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        th { background: var(--muso-navy); color: white; text-transform: uppercase; }
+
+        .status-waiting { color: #f57c00; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; }
+        .status-confirmed { color: #2e7d32; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; }
+
+        .btn-confirm-wa { background: #25D366; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+        .btn-del { background: #d32f2f; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+
+        .footer-credits { margin-top: 30px; color: white; font-weight: bold; font-size: 0.9rem; cursor: pointer; text-align: center; text-shadow: 1px 1px 4px rgba(0,0,0,0.8); }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 2000; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 450px; max-height: 90vh; overflow-y: auto; }
+        
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; box-sizing: border-box; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--muso-navy); font-size: 0.9rem; }
+        
+        .btn-confirm { background: #2e7d32; color: white; border: none; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.1rem; margin-top: 10px; }
+        #admin-status { display: none; background: #c8e6c9; color: #1b5e20; padding: 12px; text-align: center; font-weight: bold; width: 100%; max-width: 1100px; border-radius: 12px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="admin-status">ADMIN MODE ACTIVE (ARSHAD)</div>
+
+<div class="main-card">
+    <div class="header-section">
+        <div class="header-bg"></div>
+        <div class="header-content">
+            <h1>MUSO BOOKING PLATFORM</h1>
+            <div class="description-box">
+                Official online booking system developed by <strong>MUSO (Mzumbe University Student Organization)</strong>. 
+                Designed to simplify, centralize, and modernize facility reservations. 
+                Eliminate manual processes, reduce conflicts, and improve accessibility to university resources.
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-tabs">
+        <button id="t1" class="active" onclick="showTab('venue')">1. BOOK VENUES</button>
+        <button id="t2" onclick="showTab('ground')">2. BOOK GROUNDS</button>
+        <button id="t3" onclick="showTab('booked-venue')">3. BOOKED VENUES</button>
+        <button id="t4" onclick="showTab('booked-ground')">4. BOOKED GROUNDS</button>
+    </div>
+
+    <div class="content-area">
+        <div id="loader" style="display:none; text-align:center; font-weight:bold;">Processing...</div>
+        <ul id="resource-grid"></ul>
+        <div id="table-container" style="display:none; overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr><th>Resource</th><th>Programme</th><th>Time</th><th>Date</th><th>Status</th><th id="admin-th" style="display:none;">Admin Actions</th></tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="footer-credits" onclick="adminAccess()">
+    All rights reserved, a product by RishedKassim
+</div>
+
+<div id="booking-modal" class="modal">
+    <div class="modal-content">
+        <h2 id="modal-title" style="margin-top:0; color:var(--muso-navy); border-bottom:2px solid #eee; padding-bottom:10px;"></h2>
+        <form id="book-form">
+            <label>Programme Name</label>
+            <input type="text" id="prog-name" placeholder="e.g. LLB, BAF, BPA" required>
+            
+            <label>WhatsApp Number (e.g. 255...)</label>
+            <input type="tel" id="user-phone" placeholder="255XXXXXXXXX" required>
+
+            <label>Start Time (24 HOURS FORMAT)</label>
+            <input type="text" id="time-from" placeholder="e.g. 16:00" required>
+            
+            <label>End Time (24 HOURS FORMAT)</label>
+            <input type="text" id="time-to" placeholder="e.g. 20:00" required>
+            
+            <label>Date</label>
+            <input type="date" id="book-date" required>
+            
+            <button type="submit" class="btn-confirm">SUBMIT BOOKING</button>
+            <button type="button" onclick="closeModal()" style="width:100%; margin-top:10px; border:none; background:none; color:red; cursor:pointer; font-weight:bold;">CANCEL</button>
+        </form>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDgCGn5KoMpY4I-n9z8-bpI3GWoAMo4-i0",
+        authDomain: "muso-booking-system.firebaseapp.com",
+        projectId: "muso-booking-system",
+        storageBucket: "muso-booking-system.firebasestorage.app",
+        messagingSenderId: "640979443623",
+        appId: "1:640979443623:web:d93b81572c730484cea082"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    let currentRes = "";
+    let isAdmin = false;
+
+    const getEATTime = () => {
+        const now = new Date();
+        const eat = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+        return eat.toISOString().split('T')[1].substring(0,5);
+    };
+
+    window.showTab = async (type) => {
+        document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+        const grid = document.getElementById('resource-grid');
+        const tableCont = document.getElementById('table-container');
+        const loader = document.getElementById('loader');
+        
+        loader.style.display = 'block';
+        grid.innerHTML = "";
+        tableCont.style.display = 'none';
+
+        const bookSnap = await getDocs(collection(db, "bookings"));
+        const activeBookings = [];
+        const currentTime = getEATTime();
+        const today = new Date().toISOString().split('T')[0];
+
+        bookSnap.forEach(d => {
+            const b = d.data();
+            if(b.date === today && currentTime < b.timeTo) {
+                activeBookings.push(b.resourceName);
+            }
+        });
+
+        if (type === 'venue' || type === 'ground') {
+            document.getElementById(type === 'venue' ? 't1' : 't2').classList.add('active');
+            const resSnap = await getDocs(query(collection(db, "resources"), where("type", "==", type)));
+            loader.style.display = 'none';
+            resSnap.forEach(d => {
+                const name = d.data().name;
+                if(!activeBookings.includes(name)) {
+                    const li = document.createElement('li');
+                    li.className = 'resource-card';
+                    li.textContent = name;
+                    li.onclick = () => {
+                        currentRes = name;
+                        document.getElementById('modal-title').textContent = name;
+                        document.getElementById('booking-modal').style.display = 'flex';
+                    };
+                    grid.appendChild(li);
+                }
+            });
+        } else {
+            const targetType = type.split('-')[1];
+            document.getElementById(type === 'booked-venue' ? 't3' : 't4').classList.add('active');
+            const resSnap = await getDocs(query(collection(db, "resources"), where("type", "==", targetType)));
+            const typeNames = resSnap.docs.map(d => d.data().name);
+
+            loader.style.display = 'none';
+            tableCont.style.display = 'block';
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = "";
+            document.getElementById('admin-th').style.display = isAdmin ? 'table-cell' : 'none';
+
+            bookSnap.forEach(d => {
+                const b = d.data();
+                if(typeNames.includes(b.resourceName) && b.date === today && currentTime < b.timeTo) {
+                    const tr = document.createElement('tr');
+                    const isConfirmed = b.status === "confirmed";
+                    
+                    tr.innerHTML = `
+                        <td>${b.resourceName}</td>
+                        <td>${b.programme}</td>
+                        <td>${b.timeFrom}-${b.timeTo}</td>
+                        <td>${b.date}</td>
+                        <td>
+                            <span class="${isConfirmed ? 'status-confirmed' : 'status-waiting'}">
+                                ${isConfirmed ? 'CONFIRMED' : 'WAITING FOR APPROVAL'}
+                            </span>
+                        </td>
+                        ${isAdmin ? `<td>
+                            ${!isConfirmed ? `<button class="btn-confirm-wa" onclick="approveAndNotify('${d.id}', '${b.phoneNumber}', '${b.resourceName}', '${b.programme}', '${b.timeFrom}', '${b.timeTo}', '${b.date}')">SEND SMS</button>` : ''}
+                            <button class="btn-del" onclick="delBook('${d.id}', '${type}')">DEL</button>
+                        </td>` : ''}
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+    };
+
+    document.getElementById('book-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const data = {
+            resourceName: currentRes,
+            programme: document.getElementById('prog-name').value,
+            phoneNumber: document.getElementById('user-phone').value,
+            timeFrom: document.getElementById('time-from').value,
+            timeTo: document.getElementById('time-to').value,
+            date: document.getElementById('book-date').value,
+            status: "pending",
+            createdAt: serverTimestamp()
+        };
+        await addDoc(collection(db, "bookings"), data);
+        alert("Booking submitted! Check 'BOOKED' tabs for status.");
+        closeModal();
+        showTab('venue');
+    };
+
+    window.approveAndNotify = async (docId, phone, venue, prog, start, end, date) => {
+        try {
+            await updateDoc(doc(db, "bookings", docId), { status: "confirmed" });
+            const message = `*FROM: MUSO ADMIN*%0A%0AHello! Your booking for *${venue}* (${prog}) on *${date}* from *${start}* to *${end}* has been *SUCCESSFULLY APPROVED*. %0A%0AThank you for using the MUSO Booking Platform!`;
+            window.location.href = `https://wa.me/${phone}?text=${message}`;
+        } catch (e) {
+            alert("Error: " + e.message);
+        }
+    };
+
+    window.adminAccess = () => {
+        const u = prompt("Admin User:");
+        const p = prompt("Admin Key:");
+        if(u === "ARSHAD" && p === "DAPROO16") {
+            isAdmin = true;
+            document.getElementById('admin-status').style.display = 'block';
+            alert("Admin Access Granted.");
+            showTab('venue');
+        }
+    };
+
+    window.delBook = async (id, currentTab) => {
+        if(confirm("Admin: Delete this record?")) {
+            await deleteDoc(doc(db, "bookings", id));
+            showTab(currentTab);
+        }
+    };
+
+    window.closeModal = () => {
+        document.getElementById('booking-modal').style.display = 'none';
+        document.getElementById('book-form').reset();
+    };
+
+    window.onload = () => showTab('venue');
+</script>
+</body>
+</html>
