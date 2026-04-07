@@ -25,7 +25,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
+            padding: 20px 10px; /* Mobile padding */
         }
 
         .main-card {
@@ -59,54 +59,65 @@
         .header-content {
             position: relative;
             z-index: 2;
-            padding: 60px 40px;
+            padding: 40px 20px;
             color: white;
         }
 
-        h1 { margin: 0; font-size: 3.2rem; text-transform: uppercase; letter-spacing: 5px; text-shadow: 2px 2px 10px rgba(0,0,0,0.6); }
+        h1 { margin: 0; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 3px; text-shadow: 2px 2px 10px rgba(0,0,0,0.6); }
 
-        .description-box { padding: 20px 40px 0; line-height: 1.7; font-size: 1.1rem; max-width: 900px; margin: 0 auto; text-shadow: 1px 1px 5px rgba(0,0,0,0.6); }
+        .description-box { padding: 15px 20px; line-height: 1.6; font-size: 1rem; max-width: 900px; margin: 0 auto; text-shadow: 1px 1px 5px rgba(0,0,0,0.6); }
 
-        .nav-tabs { display: flex; background: #e8eaf6; padding: 12px; gap: 10px; }
-        .nav-tabs button { flex: 1; padding: 20px 5px; border: none; cursor: pointer; font-weight: bold; font-size: 0.95rem; background: #c5cae9; color: var(--muso-navy); border-radius: 12px; transition: 0.3s; text-transform: uppercase; }
+        .nav-tabs { display: flex; flex-wrap: wrap; background: #e8eaf6; padding: 8px; gap: 8px; }
+        .nav-tabs button { flex: 1 1 45%; padding: 12px 5px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; background: #c5cae9; color: var(--muso-navy); border-radius: 10px; transition: 0.3s; text-transform: uppercase; }
         .nav-tabs button.active { background: var(--muso-navy); color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         
-        .content-area { padding: 40px; min-height: 400px; }
-        #resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; list-style: none; padding: 0; }
+        .content-area { padding: 20px; min-height: 300px; }
+        #resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; list-style: none; padding: 0; }
         
         .resource-card { 
-            background: #f8f9fa; padding: 40px 20px; border-radius: 18px; 
+            background: #f8f9fa; padding: 25px 10px; border-radius: 15px; 
             border: 2px solid #dee2e6; text-align: center; font-style: italic; 
-            font-weight: bold; font-size: 1.3rem; color: var(--muso-navy); 
+            font-weight: bold; font-size: 1rem; color: var(--muso-navy); 
             cursor: pointer; transition: 0.3s; 
         }
-        .resource-card:hover { border-color: var(--muso-navy); background: var(--muso-navy); color: white; transform: translateY(-5px); }
+        /* User Requirement: Words change to yellow when selected/hovered */
+        .resource-card:hover { border-color: var(--muso-navy); background: var(--muso-navy); color: var(--gold); transform: translateY(-3px); }
 
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; background: white; min-width: 600px; }
+        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.85rem; }
         th { background: var(--muso-navy); color: white; text-transform: uppercase; }
 
-        .status-waiting { color: #f57c00; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; }
-        .status-confirmed { color: #2e7d32; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; }
+        .status-waiting { color: #f57c00; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; }
+        .status-confirmed { color: #2e7d32; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; }
 
-        .btn-confirm-wa { background: #25D366; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
-        .btn-del { background: #d32f2f; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+        .btn-confirm-wa { background: #25D366; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; }
+        .btn-del { background: #d32f2f; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.75rem; }
 
-        .footer-credits { margin-top: 30px; color: white; font-weight: bold; font-size: 0.9rem; cursor: pointer; text-align: center; text-shadow: 1px 1px 4px rgba(0,0,0,0.8); }
+        .footer-credits { margin-top: 25px; color: white; font-weight: bold; font-size: 0.85rem; cursor: pointer; text-align: center; text-shadow: 1px 1px 4px rgba(0,0,0,0.8); }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 2000; }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 450px; max-height: 90vh; overflow-y: auto; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 2000; padding: 10px; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
         
         input { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; box-sizing: border-box; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--muso-navy); font-size: 0.9rem; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--muso-navy); font-size: 0.85rem; }
         
-        .btn-confirm { background: #2e7d32; color: white; border: none; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.1rem; margin-top: 10px; }
-        #admin-status { display: none; background: #c8e6c9; color: #1b5e20; padding: 12px; text-align: center; font-weight: bold; width: 100%; max-width: 1100px; border-radius: 12px; margin-bottom: 10px; }
+        .btn-confirm { background: #2e7d32; color: white; border: none; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 10px; }
+
+        /* Tablet/Desktop Adjustments */
+        @media (min-width: 768px) {
+            h1 { font-size: 3.2rem; }
+            .description-box { font-size: 1.1rem; padding: 20px 40px 0; }
+            .nav-tabs button { flex: 1; font-size: 0.95rem; padding: 20px 5px; }
+            .header-content { padding: 60px 40px; }
+            #resource-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+            .resource-card { font-size: 1.3rem; padding: 40px 20px; }
+            th, td { font-size: 0.9rem; }
+            body { padding: 40px 20px; }
+        }
     </style>
 </head>
 <body>
-
-<div id="admin-status">ADMIN MODE ACTIVE (ARSHAD)</div>
 
 <div class="main-card">
     <div class="header-section">
@@ -129,9 +140,9 @@
     </div>
 
     <div class="content-area">
-        <div id="loader" style="display:none; text-align:center; font-weight:bold;">Processing...</div>
+        <div id="loader" style="display:none; text-align:center; font-weight:bold; color:var(--muso-navy);">Processing...</div>
         <ul id="resource-grid"></ul>
-        <div id="table-container" style="display:none; overflow-x: auto;">
+        <div id="table-container" style="display:none;" class="table-wrapper">
             <table>
                 <thead>
                     <tr><th>Resource</th><th>Programme</th><th>Time</th><th>Date</th><th>Status</th><th id="admin-th" style="display:none;">Admin Actions</th></tr>
@@ -148,7 +159,7 @@
 
 <div id="booking-modal" class="modal">
     <div class="modal-content">
-        <h2 id="modal-title" style="margin-top:0; color:var(--muso-navy); border-bottom:2px solid #eee; padding-bottom:10px;"></h2>
+        <h2 id="modal-title" style="margin-top:0; color:var(--muso-navy); border-bottom:2px solid #eee; padding-bottom:10px; font-size:1.2rem;"></h2>
         <form id="book-form">
             <label>Programme Name</label>
             <input type="text" id="prog-name" placeholder="e.g. LLB, BAF, BPA" required>
@@ -166,7 +177,7 @@
             <input type="date" id="book-date" required>
             
             <button type="submit" class="btn-confirm">SUBMIT BOOKING</button>
-            <button type="button" onclick="closeModal()" style="width:100%; margin-top:10px; border:none; background:none; color:red; cursor:pointer; font-weight:bold;">CANCEL</button>
+            <button type="button" onclick="closeModal()" style="width:100%; margin-top:10px; border:none; background:none; color:red; cursor:pointer; font-weight:bold; font-size:0.9rem;">CANCEL</button>
         </form>
     </div>
 </div>
@@ -174,6 +185,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDgCGn5KoMpY4I-n9z8-bpI3GWoAMo4-i0",
@@ -186,8 +198,14 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
+
     let currentRes = "";
     let isAdmin = false;
+
+    onAuthStateChanged(auth, (user) => {
+        isAdmin = (user && user.email === 'rishedkassimu@gmail.com');
+    });
 
     const getEATTime = () => {
         const now = new Date();
@@ -295,21 +313,24 @@
     window.approveAndNotify = async (docId, phone, venue, prog, start, end, date) => {
         try {
             await updateDoc(doc(db, "bookings", docId), { status: "confirmed" });
-            const message = `*FROM: MUSO ADMIN*%0A%0AHello! Your booking for *${venue}* (${prog}) on *${date}* from *${start}* to *${end}* has been *SUCCESSFULLY APPROVED*. %0A%0AThank you for using the MUSO Booking Platform!`;
+            const message = `*FROM: MUSO ADMIN*%0A%0AHello! Your booking for *${venue}* (${prog}) on *${date}* from *${start}* to *${end}* has been *SUCCESSFULLY APPROVED*.`;
             window.location.href = `https://wa.me/${phone}?text=${message}`;
         } catch (e) {
             alert("Error: " + e.message);
         }
     };
 
-    window.adminAccess = () => {
-        const u = prompt("Admin User:");
-        const p = prompt("Admin Key:");
-        if(u === "ARSHAD" && p === "DAPROO16") {
-            isAdmin = true;
-            document.getElementById('admin-status').style.display = 'block';
-            alert("Admin Access Granted.");
-            showTab('venue');
+    window.adminAccess = async () => {
+        const u = prompt("Admin Email:");
+        const p = prompt("Admin Password:");
+        if (u && p) {
+            try {
+                await signInWithEmailAndPassword(auth, u, p);
+                alert("Access Granted.");
+                showTab('venue');
+            } catch (e) {
+                alert("Login Failed.");
+            }
         }
     };
 
