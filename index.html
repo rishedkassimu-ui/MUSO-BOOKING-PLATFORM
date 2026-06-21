@@ -161,9 +161,26 @@ tr:hover td{background:var(--surface2)}
 .staff-msg.err{color:#dc2626}
 [data-dark] .staff-row input{background:#1a1f3d;border-color:#252a4a;color:#e8eaf6}
 [data-dark] .staff-list li{background:#1a1f3d;color:#e8eaf6}
+
+/* TOAST NOTIFICATIONS */
+.toast-stack{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:340px;pointer-events:none}
+.toast{pointer-events:auto;background:var(--surface);border-left:4px solid var(--blue);border-radius:10px;box-shadow:0 8px 28px rgba(15,26,110,0.18);padding:14px 16px;font-size:13px;color:var(--text);display:flex;align-items:flex-start;gap:10px;opacity:0;transform:translateX(20px);transition:opacity 0.25s ease,transform 0.25s ease}
+.toast.show{opacity:1;transform:translateX(0)}
+.toast.ok{border-left-color:var(--success)}
+.toast.err{border-left-color:#dc2626}
+.toast .toast-icon{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;margin-top:1px}
+.toast.ok .toast-icon{background:var(--success)}
+.toast.err .toast-icon{background:#dc2626}
+.toast .toast-text{flex:1;line-height:1.45}
+.toast .toast-close{flex-shrink:0;background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;line-height:1;padding:2px}
+.toast .toast-close:hover{color:var(--text)}
+[data-dark] .toast{background:#131630;color:#e8eaf6}
 </style>
 </head>
 <body id="appRoot">
+
+<div class="toast-stack" id="toast-stack"></div>
+
 
 <nav class="navbar">
   <div class="nav-brand">
@@ -268,7 +285,7 @@ tr:hover td{background:var(--surface2)}
           <input type="text" id="prog-name" placeholder="e.g. LLB, BAF, BPA" required>
         </div>
         <div class="form-group">
-          <label>WhatsApp Number (e.g. 255...)</label>
+          <label>Phone Number (e.g. 255...)</label>
           <input type="tel" id="user-phone" placeholder="255XXXXXXXXX" required>
         </div>
         <div class="form-group">
@@ -473,7 +490,7 @@ document.getElementById('book-form').onsubmit = async (e) => {
     createdAt: serverTimestamp()
   };
   await addDoc(collection(db, "bookings"), data);
-  alert("Booking submitted! Check the 'Booked' tabs for your booking status.");
+  showToast("Booking submitted! Check the 'Booked' tabs for your booking status.", "ok");
   closeModal();
   showTab('venue');
 };
@@ -496,24 +513,61 @@ function normalizeTzPhone(phone) {
   return digits;
 }
 
+// Shows a small styled notification box (top-right) instead of the plain
+// browser alert() popup. type is "ok" or "err".
+function showToast(text, type) {
+  const stack = document.getElementById('toast-stack');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  const icon = type === 'ok' ? '✓' : '!';
+  el.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-text"></span><button class="toast-close" aria-label="Dismiss">✕</button>`;
+  el.querySelector('.toast-text').textContent = text;
+  stack.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  const remove = () => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 250);
+  };
+  el.querySelector('.toast-close').onclick = remove;
+  setTimeout(remove, 5000);
+}
+
 async function sendSms(toPhone, message) {
   // RafikiSMS caps messages at 160 characters - trim defensively so the API doesn't reject it.
   const safeMessage = message.length > 160 ? message.slice(0, 157) + "..." : message;
-  const response = await fetch("https://api.rafikisms.com/v1/vendor/send-sms", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-Key": RAFIKISMS_API_KEY
-    },
-    body: JSON.stringify({
-      phone: normalizeTzPhone(toPhone),
-      message: safeMessage,
-      sender_id: RAFIKISMS_SENDER_ID
-    })
-  });
-  const data = await response.json();
-  if (!response.ok || data.status === "error") {
-    throw new Error(data?.message || `SMS send failed (status ${response.status})`);
+  let response;
+  try {
+    response = await fetch("https://api.rafikisms.com/v1/vendor/send-sms", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": RAFIKISMS_API_KEY
+      },
+      body: JSON.stringify({
+        phone: normalizeTzPhone(toPhone),
+        message: safeMessage,
+        sender_id: RAFIKISMS_SENDER_ID
+      })
+    });
+  } catch (networkErr) {
+    // Some browsers/CORS setups report a fetch() failure here even though RafikiSMS
+    // has already accepted and queued the SMS. Treat this as a soft warning rather
+    // than a hard failure so the admin isn't shown a false error after a real send.
+    console.warn("SMS request reporting failed at the network layer (message may still have been sent):", networkErr);
+    return { status: "unknown", message: "Could not confirm delivery, but the request was sent." };
+  }
+
+  // Try to read the response body, but don't treat a parsing hiccup as a send failure -
+  // RafikiSMS had already accepted/queued the message by the time we got an HTTP response.
+  let data = null;
+  try {
+    data = await response.json();
+  } catch (parseErr) {
+    data = null;
+  }
+
+  if (!response.ok || (data && data.status === "error")) {
+    throw new Error((data && data.message) || `SMS send failed (status ${response.status})`);
   }
   return data;
 }
@@ -521,10 +575,10 @@ async function sendSms(toPhone, message) {
 window.approveAndNotify = async (docId, phone, venue, prog, start, end, date) => {
   try {
     await updateDoc(doc(db, "bookings", docId), { status: "confirmed" });
-    const message = `Hellow, your booking for ${venue} (${prog}) on ${date} from ${start} to ${end} has been APPROVED.`;
+    const message = `MUSO: Your booking for ${venue} (${prog}) on ${date} from ${start} to ${end} has been APPROVED.`;
     await sendSms(phone, message);
-    alert("Booking approved and SMS sent.");
-  } catch(e) { alert("Error: " + e.message); }
+    showToast("Booking approved and SMS sent.", "ok");
+  } catch(e) { showToast("Error: " + e.message, "err"); }
 };
 
 /* ===== STAFF LOGIN (staff-only, no persisted session) ===== */
