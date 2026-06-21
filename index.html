@@ -521,7 +521,7 @@ async function sendSms(toPhone, message) {
 window.approveAndNotify = async (docId, phone, venue, prog, start, end, date) => {
   try {
     await updateDoc(doc(db, "bookings", docId), { status: "confirmed" });
-    const message = `MUSO: Your booking for ${venue} (${prog}) on ${date} from ${start} to ${end} has been APPROVED.`;
+    const message = `Hellow, your booking for ${venue} (${prog}) on ${date} from ${start} to ${end} has been APPROVED.`;
     await sendSms(phone, message);
     alert("Booking approved and SMS sent.");
   } catch(e) { alert("Error: " + e.message); }
