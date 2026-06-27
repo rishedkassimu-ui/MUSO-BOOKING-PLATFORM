@@ -282,11 +282,11 @@ tr:hover td{background:var(--surface2)}
       <form id="book-form">
         <div class="form-group">
           <label>Programme Name</label>
-          <input type="text" id="prog-name" placeholder="e.g. LLB, BAF, BPA" required>
+          <input type="text" id="prog-name" placeholder="e.g. LLB, BAF, BPA" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" required>
         </div>
         <div class="form-group">
           <label>Phone Number (e.g. 255...)</label>
-          <input type="tel" id="user-phone" placeholder="255XXXXXXXXX" required>
+          <input type="tel" id="user-phone" placeholder="255XXXXXXXXX" value="255" oninput="if(!this.value.startsWith('255')){this.value='255'+this.value.replace(/^0*/,'').replace(/^255*/,'')}" required>
         </div>
         <div class="form-group">
           <label>Start Time (24-Hour Format)</label>
@@ -497,7 +497,7 @@ document.getElementById('book-form').onsubmit = async (e) => {
   };
   await addDoc(collection(db, "bookings"), data);
   // Send confirmation SMS automatically right after booking is saved
-  const message = `Hello! Your booking for ${venue} (${prog}) on ${date} from ${start} to ${end} has been approved.`;
+  const message = `MUSO: Your booking for ${venue} (${prog}) on ${date} from ${start} to ${end} has been APPROVED.`;
   await sendSms(phone, message);
   showToast("Booking confirmed! A confirmation SMS has been sent to your phone.", "ok");
   closeModal();
